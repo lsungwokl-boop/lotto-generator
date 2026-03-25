@@ -64,6 +64,29 @@ export default function Home() {
         {/* 신규 기능: AI 번호 분석 및 추천 */}
         <AiAnalysis />
 
+        {/* 신규 섹션: 전국 로또 명당 바로가기 */}
+        <section className="animate-fade-in group">
+          <Link href="/stores">
+            <div className="glass-card rounded-[2.5rem] p-8 md:p-12 border border-white/10 shadow-xl bg-gradient-to-br from-primary/5 to-accent/5 hover:from-primary/10 hover:to-accent/10 transition-all text-center space-y-6 relative overflow-hidden active:scale-[0.99]">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[60px] rounded-full -mr-16 -mt-16"></div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white/5 group-hover:rotate-12 transition-transform">
+                  📍
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black">전국 <span className="text-primary">로또 명당</span> TOP 5</h2>
+                <p className="text-secondary font-medium max-w-md mx-auto">
+                  1등 당첨자가 수십 번 배출된 검증된 명당! <br className="hidden md:block"/>
+                  지도로 위치를 확인하고 당신의 행운을 찾아 떠나보세요.
+                </p>
+                <div className="inline-flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-2xl font-black transition-all group-hover:px-12 group-hover:bg-primary group-hover:text-white">
+                  명당 리스트 확인하기
+                  <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </section>
+
         {/* 3. 최신 지역 행사 섹션 */}
         <section id="events" className="space-y-6 animate-fade-in">
           <div className="flex items-center justify-between px-4">

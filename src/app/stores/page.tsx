@@ -4,47 +4,47 @@ import Link from 'next/link';
 import WeatherWidget from "@/components/WeatherWidget";
 import ThemeToggle from "@/components/ThemeToggle";
 
-// 부산 로또 명당 TOP 5 데이터
+// 전국 로또 명당 TOP 5 데이터
 const lottoStores = [
   {
     id: 1,
-    name: '부일카서비스',
+    name: '부일카서비스 (부산)',
     address: '부산 동구 자성로 133번길 35',
-    wins: '1등 40+회 배출',
-    description: '전국구 로또 성지! 부산을 넘어 대한민국 최고의 명당 중 하나로 손꼽히는 곳입니다.',
+    wins: '1등 40회 이상 배출',
+    description: '대한민국 로또의 성지라고 불리는 곳입니다. 전국에서 가장 많은 당첨자를 배출한 전설의 명당입니다.',
     mapUrl: 'https://maps.google.com/maps?q=부산 동구 자성로 133번길 35&t=&z=15&ie=UTF8&iwloc=&output=embed'
   },
   {
     id: 2,
-    name: '뉴빅마트',
-    address: '부산 기장군 정관중앙로 48',
-    wins: '1등 다수 배출',
-    description: '최근 당첨자를 무더기로 배출하며 신흥 명당으로 떠오른 기장의 핫플레이스입니다.',
-    mapUrl: 'https://maps.google.com/maps?q=부산 기장군 정관중앙로 48&t=&z=15&ie=UTF8&iwloc=&output=embed'
+    name: '스파 (서울 노원)',
+    address: '서울 노원구 동일로 1493 상계주공아파트',
+    wins: '1등 35회 이상 배출',
+    description: '서울의 자존심! 노원구 상계동에 위치한 이곳은 주말이면 번호표를 뽑고 기다릴 정도로 인기가 많습니다.',
+    mapUrl: 'https://maps.google.com/maps?q=서울 노원구 동일로 1493&t=&z=15&ie=UTF8&iwloc=&output=embed'
   },
   {
     id: 3,
-    name: '팡팡복권방',
-    address: '부산 부산진구 가야대로 705',
-    wins: '1등 10+회 배출',
-    description: '서면 중심가와 가까워 접근성이 매우 뛰어나며, 오랜 세월 당첨자를 꾸준히 내놓고 있습니다.',
-    mapUrl: 'https://maps.google.com/maps?q=부산 부산진구 가야대로 705&t=&z=15&ie=UTF8&iwloc=&output=embed'
+    name: '잠실매점 (서울 송파)',
+    address: '서울 송파구 올림픽로 269 잠실역 8번 출구 앞',
+    wins: '1등 15회 이상 배출',
+    description: '잠실역 출구 바로 앞에 위치하여 직장인들의 성지로 불립니다. 퇴근길 줄이 끊이지 않는 곳입니다.',
+    mapUrl: 'https://maps.google.com/maps?q=서울 송파구 올림픽로 269&t=&z=15&ie=UTF8&iwloc=&output=embed'
   },
   {
     id: 4,
-    name: '세원로또복권방',
-    address: '부산 수영구 수영로 723',
-    wins: '1등 다수 배출',
-    description: '수영구 최고의 명당! 주변 유동인구가 많아 주말이면 긍정적인 에너지가 가득합니다.',
-    mapUrl: 'https://maps.google.com/maps?q=부산 수영구 수영로 723&t=&z=15&ie=UTF8&iwloc=&output=embed'
+    name: '복권명당 (대구)',
+    address: '대구 달서구 월배로 122',
+    wins: '1등 10회 이상 배출',
+    description: '대구 지역 최고의 명당으로 손꼽히며, 영남권 로또 마니아들이 꼭 들르는 필수 코스입니다.',
+    mapUrl: 'https://maps.google.com/maps?q=대구 달서구 월배로 122&t=&z=15&ie=UTF8&iwloc=&output=embed'
   },
   {
     id: 5,
-    name: '로또명당 해운대점',
-    address: '부산 해운대구 해운대로 608',
-    wins: '1등 10+회 배출',
-    description: '바다의 기운을 담아! 해운대 여행 객들과 지역 주민 모두에게 사랑받는 행운의 장소입니다.',
-    mapUrl: 'https://maps.google.com/maps?q=부산 해운대구 해운대로 608&t=&z=15&ie=UTF8&iwloc=&output=embed'
+    name: '팡팡복권방 (부산 서면)',
+    address: '부산 부산진구 가야대로 705',
+    wins: '1등 10회 이상 배출',
+    description: '부산 서면의 기운을 담은 명당! 접근성이 좋아 젊은 층부터 어르신들까지 모두가 즐겨 찾습니다.',
+    mapUrl: 'https://maps.google.com/maps?q=부산 부산진구 가야대로 705&t=&z=15&ie=UTF8&iwloc=&output=embed'
   }
 ];
 
@@ -72,10 +72,10 @@ export default function StoresPage() {
       <main className="pt-32 px-4 max-w-5xl mx-auto space-y-12 animate-fade-in">
         <section className="text-center space-y-4">
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none mb-4">
-            부산 로또 명당 <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">TOP 5</span>
+            전국 로또 명당 <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">TOP 5</span>
           </h1>
           <p className="text-secondary font-medium text-lg">
-            행운의 기운이 가득한 부산 최고의 1등 배출점을 지도와 함께 확인하세요! 🍀
+            대한민국 행운의 기운이 모이는 전국 최고의 1등 배출점을 확인하세요! 🍀
           </p>
         </section>
 
@@ -83,12 +83,12 @@ export default function StoresPage() {
           {lottoStores.map((store, idx) => (
             <div 
               key={store.id} 
-              className="glass-card rounded-[2.5rem] p-6 md:p-8 border border-white/10 shadow-lg flex flex-col md:flex-row gap-8 animate-pop-in relative overflow-hidden group"
+              className="glass-card rounded-[2.5rem] p-6 md:p-8 border border-white/10 shadow-lg flex flex-col md:flex-row gap-8 animate-pop-in relative overflow-hidden group hover:border-primary/30 transition-all"
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
               <div className="md:w-1/2 flex flex-col justify-center space-y-4">
                 <div className="inline-block bg-primary/10 text-primary font-bold px-4 py-1.5 rounded-full text-sm w-max border border-primary/20">
-                  TOP {store.id}
+                  RANK {idx + 1}
                 </div>
                 <h2 className="text-3xl font-black">{store.name}</h2>
                 <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-orange-500">
@@ -103,7 +103,7 @@ export default function StoresPage() {
                 </div>
               </div>
               
-              <div className="md:w-1/2 h-64 md:h-80 rounded-[1.5rem] overflow-hidden shadow-inner border border-white/10 group-hover:border-primary/30 transition-colors">
+              <div className="md:w-1/2 h-64 md:h-80 rounded-[1.5rem] overflow-hidden shadow-inner border border-white/10 group-hover:border-primary/20 transition-colors">
                 <iframe 
                   src={store.mapUrl} 
                   className="w-full h-full border-0" 
