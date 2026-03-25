@@ -104,9 +104,14 @@ export default function Home() {
     <div className="min-h-screen transition-colors duration-500 pb-20">
       {/* 프리미엄 네비게이션 */}
       <nav className="fixed top-0 w-full z-50 glass-card px-6 py-4 flex justify-between items-center border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-tr from-primary to-accent rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg rotate-3">7</div>
-          <span className="text-xl font-black tracking-tighter">PREMIUM LOTTO</span>
+        <div className="flex items-center gap-6">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-tr from-primary to-accent rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg rotate-3">7</div>
+            <span className="text-xl font-black tracking-tighter">PREMIUM LOTTO</span>
+          </Link>
+          <div className="hidden md:flex items-center gap-6 border-l border-white/10 pl-6 h-6">
+            <Link href="/blog" className="text-sm font-bold text-secondary hover:text-primary transition-colors">블로그</Link>
+          </div>
         </div>
         
         <button onClick={toggleDarkMode} className="p-3 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all border border-secondary/5">
