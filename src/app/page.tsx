@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import LottoGenerator from "@/components/LottoGenerator";
 import AdBanner from "@/components/AdBanner";
+import FortuneAnalysis from "@/components/FortuneAnalysis";
+import AiAnalysis from "@/components/AiAnalysis";
 
 export default function Home() {
   const dataPath = path.join(process.cwd(), 'public', 'data', 'local-info.json');
@@ -48,6 +50,12 @@ export default function Home() {
 
         {/* 로또 생성기 (클라이언트 컴포넌트) */}
         <LottoGenerator />
+
+        {/* 신규 기능: 오늘의 운세 및 행운의 숫자 */}
+        <FortuneAnalysis />
+
+        {/* 신규 기능: AI 번호 분석 및 추천 */}
+        <AiAnalysis />
 
         {/* 3. 최신 지역 행사 섹션 */}
         <section id="events" className="space-y-6 animate-fade-in">
