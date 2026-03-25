@@ -5,6 +5,7 @@ import LottoGenerator from "@/components/LottoGenerator";
 import AdBanner from "@/components/AdBanner";
 import FortuneAnalysis from "@/components/FortuneAnalysis";
 import AiAnalysis from "@/components/AiAnalysis";
+import WeatherWidget from "@/components/WeatherWidget";
 
 export default function Home() {
   const dataPath = path.join(process.cwd(), 'public', 'data', 'local-info.json');
@@ -34,6 +35,7 @@ export default function Home() {
             <Link href="/blog" className="text-sm font-bold text-secondary hover:text-primary transition-colors">블로그</Link>
           </div>
         </div>
+        <WeatherWidget />
       </nav>
 
       <main className="pt-28 px-4 max-w-4xl mx-auto space-y-12">

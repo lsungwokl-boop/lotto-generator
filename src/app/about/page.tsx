@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import WeatherWidget from "@/components/WeatherWidget";
 
 export default function AboutPage() {
   return (
@@ -17,6 +18,7 @@ export default function AboutPage() {
             <Link href="/blog" className="text-sm font-bold text-secondary hover:text-primary transition-colors">블로그</Link>
           </div>
         </div>
+        <WeatherWidget />
       </nav>
 
       <main className="pt-32 px-4 max-w-4xl mx-auto space-y-12 animate-fade-in">

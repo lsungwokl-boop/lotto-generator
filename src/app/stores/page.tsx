@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import WeatherWidget from "@/components/WeatherWidget";
 
 // 부산 로또 명당 TOP 5 데이터
 const lottoStores = [
@@ -80,7 +81,7 @@ export default function StoresPage() {
             <Link href="/blog" className="text-sm font-bold text-secondary hover:text-primary transition-colors">블로그</Link>
           </div>
         </div>
-        
+        <WeatherWidget />
         <button onClick={toggleDarkMode} className="p-3 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all border border-secondary/5">
           {isDarkMode ? '🌞' : '🌙'}
         </button>

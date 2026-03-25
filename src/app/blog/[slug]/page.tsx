@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import AdBanner from '@/components/AdBanner';
 import CoupangBanner from '@/components/CoupangBanner';
+import WeatherWidget from '@/components/WeatherWidget';
 
 export const dynamic = 'force-static';
 
@@ -127,9 +128,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="hidden md:flex items-center gap-6 pr-6">
           <Link href="/about" className="text-sm font-bold text-secondary hover:text-primary transition-colors">소개</Link>
         </div>
-        <Link href="/blog" className="px-6 py-2 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all font-bold text-sm">
-          목록으로 돌아가기
-        </Link>
+        <div className="flex items-center gap-4">
+          <WeatherWidget />
+          <Link href="/blog" className="px-6 py-2 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all font-bold text-sm">
+            목록으로 돌아가기
+          </Link>
+        </div>
       </nav>
 
       <main className="pt-28 px-4 max-w-4xl mx-auto space-y-12 animate-fade-in">
