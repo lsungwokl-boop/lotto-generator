@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import WeatherWidget from "@/components/WeatherWidget";
+import ThemeToggle from "@/components/ThemeToggle";
 
 // 부산 로또 명당 TOP 5 데이터
 const lottoStores = [
@@ -49,24 +49,6 @@ const lottoStores = [
 ];
 
 export default function StoresPage() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    const theme = localStorage.getItem('theme');
-    if (theme === 'dark') {
-      setIsDarkMode(true);
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-  }, []);
-
-  const toggleDarkMode = () => {
-    const newMode = !isDarkMode;
-    setIsDarkMode(newMode);
-    const theme = newMode ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  };
-
   return (
     <div className="min-h-screen transition-colors duration-500 pb-20">
       <nav className="fixed top-0 w-full z-50 glass-card px-6 py-4 flex justify-between items-center border-b border-white/10">
@@ -81,10 +63,10 @@ export default function StoresPage() {
             <Link href="/blog" className="text-sm font-bold text-secondary hover:text-primary transition-colors">블로그</Link>
           </div>
         </div>
-        <WeatherWidget />
-        <button onClick={toggleDarkMode} className="p-3 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all border border-secondary/5">
-          {isDarkMode ? '🌞' : '🌙'}
-        </button>
+        <div className="flex items-center gap-3">
+          <WeatherWidget />
+          <ThemeToggle />
+        </div>
       </nav>
 
       <main className="pt-32 px-4 max-w-5xl mx-auto space-y-12 animate-fade-in">

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getSortedPostsData } from '@/lib/posts';
 import WeatherWidget from "@/components/WeatherWidget";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const dynamic = 'force-static';
 
@@ -17,10 +18,11 @@ export default function BlogListPage() {
             <span className="text-xl font-black tracking-tighter uppercase">Premium Blog</span>
           </Link>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <WeatherWidget />
-          <Link href="/" className="px-6 py-2 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all font-bold text-sm">
-            홈으로 돌아가기
+          <ThemeToggle />
+          <Link href="/" className="px-4 py-2 rounded-xl bg-secondary/10 hover:bg-secondary/20 transition-all font-bold text-xs shrink-0">
+            홈으로
           </Link>
         </div>
       </nav>

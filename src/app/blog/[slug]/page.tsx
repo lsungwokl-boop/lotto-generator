@@ -9,6 +9,7 @@ import path from 'path';
 import AdBanner from '@/components/AdBanner';
 import CoupangBanner from '@/components/CoupangBanner';
 import WeatherWidget from '@/components/WeatherWidget';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export const dynamic = 'force-static';
 
@@ -128,10 +129,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="hidden md:flex items-center gap-6 pr-6">
           <Link href="/about" className="text-sm font-bold text-secondary hover:text-primary transition-colors">소개</Link>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <WeatherWidget />
-          <Link href="/blog" className="px-6 py-2 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all font-bold text-sm">
-            목록으로 돌아가기
+          <ThemeToggle />
+          <Link href="/blog" className="px-4 py-2 rounded-xl bg-secondary/10 hover:bg-secondary/20 transition-all font-bold text-xs shrink-0">
+            목록
           </Link>
         </div>
       </nav>

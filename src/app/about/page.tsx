@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import WeatherWidget from "@/components/WeatherWidget";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AboutPage() {
   return (
@@ -18,7 +19,10 @@ export default function AboutPage() {
             <Link href="/blog" className="text-sm font-bold text-secondary hover:text-primary transition-colors">블로그</Link>
           </div>
         </div>
-        <WeatherWidget />
+        <div className="flex items-center gap-3">
+          <WeatherWidget />
+          <ThemeToggle />
+        </div>
       </nav>
 
       <main className="pt-32 px-4 max-w-4xl mx-auto space-y-12 animate-fade-in">
