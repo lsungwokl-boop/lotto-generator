@@ -6,6 +6,7 @@ import AdBanner from "@/components/AdBanner";
 import FortuneAnalysis from "@/components/FortuneAnalysis";
 import AiAnalysis from "@/components/AiAnalysis";
 import WeatherWidget from "@/components/WeatherWidget";
+import LuckyTips from "@/components/LuckyTips";
 
 export default function Home() {
   const dataPath = path.join(process.cwd(), 'public', 'data', 'local-info.json');
@@ -67,28 +68,30 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 gap-4">
             {eventInfo.length > 0 ? eventInfo.map((info, idx) => (
-              <div key={idx} className="glass-card rounded-[2rem] p-6 border border-white/10 shadow-lg group hover:border-accent/30 transition-all">
-                <script
-                  type="application/ld+json"
-                  dangerouslySetInnerHTML={{ __html: JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "Event",
-                    "name": info.name,
-                    "startDate": info.startDate,
-                    "endDate": info.endDate,
-                    "location": { "@type": "Place", "name": info.location, "address": info.location },
-                    "description": info.summary
-                  }) }}
-                />
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-accent/10 text-accent px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">EVENT</span>
-                    <span className="text-[10px] text-secondary font-bold">{info.startDate} ~ {info.endDate}</span>
+              <Link href="/blog" key={idx} className="block group">
+                <div className="glass-card rounded-[2rem] p-6 border border-white/10 shadow-lg group-hover:border-accent/30 transition-all active:scale-[0.99]">
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "Event",
+                      "name": info.name,
+                      "startDate": info.startDate,
+                      "endDate": info.endDate,
+                      "location": { "@type": "Place", "name": info.location, "address": info.location },
+                      "description": info.summary
+                    }) }}
+                  />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-accent/10 text-accent px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">EVENT</span>
+                      <span className="text-[10px] text-secondary font-bold">{info.startDate} ~ {info.endDate}</span>
+                    </div>
+                    <h3 className="text-xl font-black group-hover:text-accent transition-colors">{info.name}</h3>
+                    <p className="text-sm text-secondary leading-relaxed line-clamp-2">{info.summary}</p>
                   </div>
-                  <h3 className="text-xl font-black">{info.name}</h3>
-                  <p className="text-sm text-secondary leading-relaxed line-clamp-2">{info.summary}</p>
                 </div>
-              </div>
+              </Link>
             )) : (
               <div className="text-center py-10 opacity-30 text-xs font-bold">새로운 행사가 곧 업데이트됩니다.</div>
             )}
@@ -106,26 +109,28 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 gap-4">
             {serviceInfo.length > 0 ? serviceInfo.map((info, idx) => (
-              <div key={idx} className="glass-card rounded-[2rem] p-6 border border-white/10 shadow-lg group hover:border-primary/30 transition-all">
-                <script
-                  type="application/ld+json"
-                  dangerouslySetInnerHTML={{ __html: JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "GovernmentService",
-                    "name": info.name,
-                    "description": info.summary,
-                    "provider": { "@type": "GovernmentOrganization", "name": "부산광역시" }
-                  }) }}
-                />
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">BENEFIT</span>
-                    <span className="text-[10px] text-secondary font-bold">상시 접수</span>
+              <Link href="/blog" key={idx} className="block group">
+                <div className="glass-card rounded-[2rem] p-6 border border-white/10 shadow-lg group-hover:border-primary/30 transition-all active:scale-[0.99]">
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "GovernmentService",
+                      "name": info.name,
+                      "description": info.summary,
+                      "provider": { "@type": "GovernmentOrganization", "name": "부산광역시" }
+                    }) }}
+                  />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">BENEFIT</span>
+                      <span className="text-[10px] text-secondary font-bold">상시 접수</span>
+                    </div>
+                    <h3 className="text-xl font-black group-hover:text-primary transition-colors">{info.name}</h3>
+                    <p className="text-sm text-secondary leading-relaxed line-clamp-2">{info.summary}</p>
                   </div>
-                  <h3 className="text-xl font-black">{info.name}</h3>
-                  <p className="text-sm text-secondary leading-relaxed line-clamp-2">{info.summary}</p>
                 </div>
-              </div>
+              </Link>
             )) : (
               <div className="text-center py-10 opacity-30 text-xs font-bold">새로운 혜택이 곧 업데이트됩니다.</div>
             )}
@@ -134,19 +139,19 @@ export default function Home() {
 
         {/* 4. 명언/당첨 정보 */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12 text-sm">
-          <div className="glass-card p-8 rounded-[2.5rem] space-y-4">
-            <h3 className="font-black text-xl">💡 행운의 팁</h3>
-            <p className="text-secondary leading-relaxed">
-              로또는 매주 수백만 명이 참여하는 확률 게임입니다. <br/>
-              너무 큰 기대보다는 일상의 즐거움으로 한 주를 채우는 용도로 즐기시는 것이 가장 좋습니다!
-            </p>
-          </div>
-          <div className="glass-card p-8 rounded-[2.5rem] space-y-4 border-l-4 border-accent">
-            <h3 className="font-black text-xl">🛡️ 정보 보호</h3>
-            <p className="text-secondary leading-relaxed">
-              이 사이트는 생성된 번호를 사용자님의 브라우저에만 임시로 저장하며, 외부 서버로 전송하거나 누구와도 공유하지 않습니다.
-            </p>
-          </div>
+          <LuckyTips />
+          
+          <Link href="/privacy" className="block group">
+            <div className="glass-card p-8 rounded-[2.5rem] space-y-4 border-l-4 border-accent hover:border-l-8 transition-all h-full shadow-lg group-hover:shadow-2xl">
+              <div className="flex justify-between items-center">
+                <h3 className="font-black text-xl">🛡️ 정보 보호</h3>
+                <span className="text-[10px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">View Policy</span>
+              </div>
+              <p className="text-secondary leading-relaxed">
+                이 사이트는 생성된 번호를 사용자님의 브라우저에만 임시로 저장하며, 외부 서버로 전송하거나 누구와도 공유하지 않습니다.
+              </p>
+            </div>
+          </Link>
         </section>
 
       </main>
