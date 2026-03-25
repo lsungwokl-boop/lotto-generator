@@ -4,10 +4,15 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 22 * * *'
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,6 +25,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Fetch Public Data
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/fetch-public-data.js
+
+      - name: Generate Blog Post
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/generate-blog-post.js
+
+      - name: Commit and Push changes
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if ! git diff --staged --quiet; then
+            git commit -m "자동 업데이트: 공공데이터 수집 및 블로그 글 생성"
+            git push
+          fi
+
       - name: Build project
         run: npm run build
 
@@ -27,4 +56,4 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler pages deploy out --project-name=my-lotto-premium
+        run: npx wrangler pages deploy out --project-name=my-local-info
