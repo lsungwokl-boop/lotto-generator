@@ -1,175 +1,247 @@
-import Link from "next/link";
-import localInfo from "../../public/data/local-info.json";
+'use client';
 
-interface InfoItem {
-  id: string;
-  title: string;
-  category: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  target: string;
-  summary: string;
-  link: string;
+import { useState, useEffect } from "react";
+import Link from "next/link";
+
+interface LottoGame {
+  numbers: number[];
+  bonus: number;
 }
 
 export default function Home() {
-  return (
-    <div className="min-h-screen bg-[#f8f9fa] font-sans text-[#212529]">
-      {/* 1. 부산시청 스타일의 미니멀 헤더 */}
-      <header className="bg-white border-b border-[#dee2e6] sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 h-20 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-black text-[#004ea2] flex items-center gap-2">
-              <span className="w-8 h-8 bg-[#004ea2] rounded-lg flex items-center justify-center text-white text-xs">정보</span>
-              성남시 생활정보
-            </h1>
-          </div>
-          <div className="flex items-center gap-6">
-            <nav className="hidden md:flex items-center gap-8 text-[15px] font-bold text-[#495057]">
-              <Link href="#" className="hover:text-[#004ea2] transition-colors">공지사항</Link>
-              <Link href="#" className="hover:text-[#004ea2] transition-colors">민원안내</Link>
-              <Link href="#" className="hover:text-[#004ea2] transition-colors">분야별정보</Link>
-            </nav>
-            <button className="p-2.5 rounded-full bg-[#f1f3f5] hover:bg-[#e9ecef] transition-colors">
-              <svg className="w-5 h-5 text-[#495057]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            </button>
-          </div>
-        </div>
-      </header>
+  const [gameCount, setGameCount] = useState(5);
+  const [games, setGames] = useState<LottoGame[]>([]);
+  const [savedGames, setSavedGames] = useState<LottoGame[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-      <main className="max-w-6xl mx-auto px-4 py-10 space-y-16">
-        {/* 히어로/배너 섹션 */}
-        <section className="bg-gradient-to-r from-[#004ea2] to-[#007bff] rounded-[2rem] p-10 text-white relative overflow-hidden shadow-xl">
-          <div className="relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-              성남의 내일을 여는<br />생활 정보 플랫폼
-            </h2>
-            <p className="text-blue-100 text-sm md:text-base max-w-xl leading-relaxed opacity-90">
-              성남시민을 위한 최신 행사 소식부터 풍성한 지원금 혜택까지,<br />
-              꼭 필요한 정보를 정직하고 빠르게 전달해 드립니다.
+  // 데이터 불러오기 및 테마 설정
+  useEffect(() => {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    
+    const saved = localStorage.getItem('savedLotto');
+    if (saved) {
+      setSavedGames(JSON.parse(saved).slice(0, 10)); // 최대 10개까지
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    const theme = newMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  };
+
+  // 로또 번호 생성 로직 (6개 + 보너스 1개)
+  const generateLottoNumbers = () => {
+    setIsGenerating(true);
+    setGames([]); // 기존 번호 초기화 (애니메이션 효과를 위해)
+    
+    const newGames: LottoGame[] = [];
+    for (let i = 0; i < gameCount; i++) {
+      const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+      const numbers: number[] = [];
+      
+      // 6개 추출
+      for (let j = 0; j < 6; j++) {
+        const randomIndex = Math.floor(Math.random() * pool.length);
+        numbers.push(pool.splice(randomIndex, 1)[0]);
+      }
+      
+      // 보너스 1개 추출
+      const bonusIndex = Math.floor(Math.random() * pool.length);
+      const bonus = pool.splice(bonusIndex, 1)[0];
+      
+      newGames.push({
+        numbers: numbers.sort((a, b) => a - b),
+        bonus: bonus
+      });
+    }
+
+    // 약간의 딜레이 후 표시 (생성 중인 느낌 전달)
+    setTimeout(() => {
+      setGames(newGames);
+      setIsGenerating(false);
+    }, 500);
+  };
+
+  const saveGame = (game: LottoGame) => {
+    const isAlreadySaved = savedGames.some(g => 
+      JSON.stringify(g.numbers) === JSON.stringify(game.numbers) && g.bonus === game.bonus
+    );
+    
+    if (isAlreadySaved) {
+      alert("이미 저장된 번호입니다! ✨");
+      return;
+    }
+
+    const updated = [game, ...savedGames].slice(0, 10);
+    setSavedGames(updated);
+    localStorage.setItem('savedLotto', JSON.stringify(updated));
+    alert("번호가 저장되었습니다! 🍀");
+  };
+
+  const copyToClipboard = (game: LottoGame) => {
+    const text = `행운의 번호: ${game.numbers.join(', ')} [보너스: ${game.bonus}]`;
+    navigator.clipboard.writeText(text);
+    alert("클립보드에 복사되었습니다! 📋");
+  };
+
+  const getBallColorClass = (num: number) => {
+    if (num <= 10) return "ball-yellow";
+    if (num <= 20) return "ball-blue";
+    if (num <= 30) return "ball-red";
+    if (num <= 40) return "ball-gray";
+    return "ball-green";
+  };
+
+  return (
+    <div className="min-h-screen transition-colors duration-500 pb-20">
+      {/* 프리미엄 네비게이션 */}
+      <nav className="fixed top-0 w-full z-50 glass-card px-6 py-4 flex justify-between items-center border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-tr from-primary to-accent rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg rotate-3">7</div>
+          <span className="text-xl font-black tracking-tighter">PREMIUM LOTTO</span>
+        </div>
+        
+        <button onClick={toggleDarkMode} className="p-3 rounded-2xl bg-secondary/10 hover:bg-secondary/20 transition-all border border-secondary/5">
+          {isDarkMode ? '🌞' : '🌙'}
+        </button>
+      </nav>
+
+      <main className="pt-28 px-4 max-w-4xl mx-auto space-y-12">
+        
+        {/* 히어로 섹션 */}
+        <section className="text-center space-y-4">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-none mb-4">
+            오늘 당신의 <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">행운은 몇 번?</span>
+          </h1>
+          <p className="text-secondary font-medium text-lg">
+            최신 알고리즘으로 추출하는 6+1 행운의 번호
+          </p>
+        </section>
+
+        {/* 1. 생성기 섹션 */}
+        <section id="generator" className="glass-card rounded-[3rem] p-8 md:p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border-t border-white/20 space-y-12 relative overflow-hidden">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <h2 className="text-2xl font-black">추첨기</h2>
+            <div className="flex items-center gap-4 bg-secondary/5 p-2 rounded-2xl border border-secondary/10">
+              <button 
+                onClick={() => setGameCount(Math.max(1, gameCount - 1))}
+                className="w-10 h-10 rounded-xl bg-background flex items-center justify-center font-bold hover:bg-primary hover:text-white transition-colors border border-secondary/10 shadow-sm"
+              >-</button>
+              <span className="font-black text-lg w-16 text-center">{gameCount} 세트</span>
+              <button 
+                onClick={() => setGameCount(Math.min(10, gameCount + 1))}
+                className="w-10 h-10 rounded-xl bg-background flex items-center justify-center font-bold hover:bg-primary hover:text-white transition-colors border border-secondary/10 shadow-sm"
+              >+</button>
+            </div>
+          </div>
+
+          <button 
+            onClick={generateLottoNumbers}
+            disabled={isGenerating}
+            className={`w-full py-6 rounded-[2rem] text-2xl font-black transition-all transform active:scale-95 shadow-2xl relative overflow-hidden group
+              ${isGenerating ? 'bg-secondary/50 cursor-not-allowed text-white/50' : 'bg-primary hover:bg-primary-hover text-white hover:-translate-y-1'}`}
+          >
+            {isGenerating ? '번호 추출 중...' : '번호 추첨하기'}
+            <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+          </button>
+
+          <div className="space-y-6">
+            {games.map((game, idx) => (
+              <div 
+                key={idx} 
+                className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 bg-secondary/5 rounded-[2.5rem] border border-secondary/10 hover:border-primary/30 transition-all animate-pop-in shadow-sm"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                <div className="flex flex-wrap justify-center gap-3">
+                  {game.numbers.map((num, nIdx) => (
+                    <div 
+                      key={nIdx} 
+                      className={`lotto-ball ${getBallColorClass(num)} animate-pop-in`} 
+                      style={{ animationDelay: `${(idx * 0.1) + (nIdx * 0.05)}s` }}
+                    >
+                      {num}
+                    </div>
+                  ))}
+                  <div className="flex items-center px-1 text-2xl font-bold opacity-30">+</div>
+                  <div 
+                    className={`lotto-ball ball-bonus animate-pop-in`} 
+                    style={{ animationDelay: `${(idx * 0.1) + (6 * 0.05)}s` }}
+                  >
+                    {game.bonus}
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <button onClick={() => copyToClipboard(game)} className="p-4 rounded-2xl bg-background hover:bg-secondary/10 transition-colors border border-secondary/10 shadow-sm" title="복사">📋</button>
+                  <button onClick={() => saveGame(game)} className="p-4 rounded-2xl bg-background hover:bg-secondary/10 transition-colors border border-secondary/10 shadow-sm" title="저장">⭐</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 2. 저장기록 섹션 */}
+        {savedGames.length > 0 && (
+          <section id="history" className="space-y-6 animate-fade-in">
+            <h2 className="text-3xl font-black italic ml-4">Saved History</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {savedGames.map((game, idx) => (
+                <div key={idx} className="glass-card p-4 md:p-6 rounded-[2rem] flex items-center justify-between hover:scale-[1.02] transition-transform cursor-pointer border border-white/5 shadow-lg relative overflow-hidden group">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {game.numbers.map((num, nIdx) => (
+                      <div key={nIdx} className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black text-white ${getBallColorClass(num)}`}>
+                        {num}
+                      </div>
+                    ))}
+                    <span className="px-1 opacity-20 text-xs">+</span>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black text-white ball-bonus">
+                      {game.bonus}
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      const updated = savedGames.filter((_, i) => i !== idx);
+                      setSavedGames(updated);
+                      localStorage.setItem('savedLotto', JSON.stringify(updated));
+                    }}
+                    className="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all text-xs"
+                  >✕</button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 3. 명언/당첨 정보 */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12 text-sm">
+          <div className="glass-card p-8 rounded-[2.5rem] space-y-4">
+            <h3 className="font-black text-xl">💡 행운의 팁</h3>
+            <p className="text-secondary leading-relaxed">
+              로또는 매주 수백만 명이 참여하는 확률 게임입니다. <br/>
+              너무 큰 기대보다는 일상의 즐거움으로 한 주를 채우는 용도로 즐기시는 것이 가장 좋습니다!
             </p>
           </div>
-          {/* 장식용 패턴 (부산시청 느낌의 기하학 패턴 생략, 단순한 구 형태로 대체) */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-          <div className="absolute bottom-0 left-1/2 w-48 h-48 bg-blue-400/20 rounded-full blur-2xl"></div>
-        </section>
-
-        {/* 2. 이번 달 행사/축제 (카드 그리드) */}
-        <section>
-          <div className="flex items-center justify-between mb-8 border-b-2 border-[#004ea2] pb-4">
-            <h2 className="text-2xl font-black text-[#212529] tracking-tight">문화 · 관광 소식</h2>
-            <Link href="#" className="text-sm font-bold text-[#868e96] hover:text-[#004ea2] flex items-center gap-1 group">
-              전체보기 <span className="group-hover:translate-x-1 transition-transform">→</span>
-            </Link>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {localInfo.events.map((event: InfoItem) => (
-              <div 
-                key={event.id}
-                className="bg-white rounded-3xl overflow-hidden border border-[#e9ecef] shadow-sm hover:shadow-xl hover:border-[#dee2e6] transition-all duration-300 flex flex-col"
-              >
-                <div className="h-40 bg-[#f1f3f5] flex items-center justify-center text-4xl group-hover:scale-105 transition-transform duration-500">
-                  {event.id === "event-1" ? "🌸" : event.id === "event-2" ? "💻" : "🎈"}
-                </div>
-                <div className="p-6 flex-1 flex flex-col">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="bg-[#e7f5ff] text-[#004ea2] text-[11px] font-black px-2.5 py-1 rounded-md">
-                      {event.category}
-                    </span>
-                    <span className="text-[#adb5bd] text-[11px] font-medium tracking-tighter uppercase">{event.startDate}</span>
-                  </div>
-                  <h3 className="text-lg font-bold mb-3 text-[#212529] line-clamp-2 leading-snug">
-                    {event.title}
-                  </h3>
-                  <p className="text-[#868e96] text-[13px] line-clamp-2 leading-relaxed mb-6">
-                    {event.summary}
-                  </p>
-                  <div className="mt-auto pt-4 border-t border-[#f1f3f5] flex items-center justify-between text-[#868e96] text-[12px]">
-                    <span className="flex items-center gap-1">📍 {event.location}</span>
-                    <Link href={`/info/${event.id}`} className="text-[#004ea2] font-bold">상세보기</Link>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="glass-card p-8 rounded-[2.5rem] space-y-4 border-l-4 border-accent">
+            <h3 className="font-black text-xl">🛡️ 정보 보호</h3>
+            <p className="text-secondary leading-relaxed">
+              이 사이트는 생성된 번호를 사용자님의 브라우저에만 임시로 저장하며, 외부 서버로 전송하거나 누구와도 공유하지 않습니다.
+            </p>
           </div>
         </section>
 
-        {/* 3. 지원금/혜택 정보 (리스트/카드 혼합) */}
-        <section className="bg-white rounded-[2.5rem] p-8 md:p-12 border border-[#dee2e6] shadow-sm">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-2xl font-black text-[#212529]">복지 · 혜택 안내</h2>
-            <div className="flex gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#ff4d4f]"></span>
-              <span className="w-2.5 h-2.5 rounded-full bg-[#ffc107]"></span>
-              <span className="w-2.5 h-2.5 rounded-full bg-[#20c997]"></span>
-            </div>
-          </div>
-          <div className="grid gap-6">
-            {localInfo.benefits.map((benefit: InfoItem) => (
-              <div 
-                key={benefit.id}
-                className="group p-6 rounded-2xl bg-[#f8f9fa] border border-transparent hover:border-[#004ea2] hover:bg-white transition-all duration-300"
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#20c997] font-black text-[10px] tracking-widest uppercase mb-1">Benefit No.{benefit.id.split('-')[1]}</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-[#212529] group-hover:text-[#004ea2] transition-colors">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-[#868e96] text-[14px] leading-relaxed max-w-2xl">
-                      {benefit.summary}
-                    </p>
-                  </div>
-                  <Link 
-                    href={`/info/${benefit.id}`}
-                    className="shrink-0 inline-flex items-center justify-center bg-white border-2 border-[#dee2e6] text-[#495057] font-bold py-3 px-6 rounded-xl hover:bg-[#004ea2] hover:border-[#004ea2] hover:text-white transition-all duration-300 text-sm shadow-sm"
-                  >
-                    지금 확인하기
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
       </main>
 
-      {/* 4. 부산시청 스타일의 정돈된 푸터 */}
-      <footer className="bg-[#343a40] text-white py-16 mt-20">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-10">
-            <div className="space-y-6">
-              <h2 className="text-xl font-black opacity-80 mb-6 tracking-tight">성남시 생활정보</h2>
-              <div className="flex gap-6 text-[13px] font-bold text-gray-400">
-                <Link href="#" className="hover:text-white transition-colors">개인정보처리방침</Link>
-                <Link href="#" className="hover:text-white transition-colors">이용약관</Link>
-                <Link href="#" className="hover:text-white transition-colors">사이트맵</Link>
-              </div>
-              <p className="text-gray-500 text-[12px] leading-loose max-w-sm">
-                본 웹사이트는 공공데이터를 기반으로 시민들에게 유용한 생활 정보를 제공하는 공익 목적의 서비스입니다. 
-                모든 정보는 매일 아침 자동으로 업데이트됩니다.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-12">
-              <div>
-                <span className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">데이터 출처</span>
-                <span className="text-sm font-bold opacity-80">공공데이터포털</span>
-              </div>
-              <div>
-                <span className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">최종 업데이트</span>
-                <span className="text-sm font-bold opacity-80">{localInfo.lastUpdated}</span>
-              </div>
-            </div>
-          </div>
-          <div className="mt-16 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-500 font-medium">
-            <p>© 2026 Seongnam-si Life Info. All rights reserved.</p>
-            <div className="flex gap-4">
-              <span className="px-2 py-0.5 rounded bg-gray-700 text-gray-400">Web Accessibility Verified</span>
-            </div>
-          </div>
-        </div>
+      <footer className="py-12 text-center space-y-4 opacity-50 text-xs font-medium">
+        <p>© 2026 PREMIUM LOTTO MACHINE. ALL RIGHTS RESERVED.</p>
+        <Link href="/privacy" className="hover:text-primary transition-colors cursor-pointer underline">개인정보처리방침</Link>
       </footer>
     </div>
   );

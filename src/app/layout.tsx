@@ -13,8 +13,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "성남시 생활 정보 - 우리 동네 소식",
-  description: "성남시의 행사, 축제, 지원금 혜택 정보를 한눈에 확인하세요.",
+  title: "로또 번호 생성기",
+  description: "행운의 로또 번호를 자동으로 생성해 드립니다. 6+1 번호를 뽑고 저장도 해보세요!",
 };
 
 export default function RootLayout({
