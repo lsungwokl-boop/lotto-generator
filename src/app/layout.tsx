@@ -6,6 +6,9 @@ import Script from "next/script";
 const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 const shouldShowAd = adsenseId && adsenseId !== "나중에_입력" && adsenseId.trim() !== "";
 
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
+const shouldShowGA = gaId && gaId !== "나중에_입력" && gaId.trim() !== "";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -44,6 +47,22 @@ export default function RootLayout({
             crossOrigin="anonymous"
             strategy="afterInteractive"
           />
+        )}
+        {shouldShowGA && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}');
+              `}
+            </Script>
+          </>
         )}
       </head>
       <body className="antialiased">
