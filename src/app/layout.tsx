@@ -20,6 +20,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  other: { "google-adsense-account": "ca-pub-5570666195506674" },
   title: "모아 SNS 스튜디오 | 소개와 사용법",
   description: "메모와 사진으로 SNS 초안을 준비하는 모아 SNS 스튜디오. 사용법과 지원 플랫폼을 확인하세요.",
   openGraph: {
