@@ -20,13 +20,13 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "부산시 생활 정보 | 행사·혜택·지원금 안내",
-  description: "부산시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
+  title: "모아 SNS 스튜디오 | 소개와 사용법",
+  description: "메모와 사진으로 SNS 초안을 준비하는 모아 SNS 스튜디오. 사용법과 지원 플랫폼을 확인하세요.",
   openGraph: {
-    title: "부산시 생활 정보 | 행사·혜택·지원금 안내",
-    description: "부산시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
+    title: "모아 SNS 스튜디오 | 소개와 사용법",
+    description: "메모와 사진으로 SNS 초안을 준비하는 모아 SNS 스튜디오. 사용법과 지원 플랫폼을 확인하세요.",
     url: "https://koreainfos.com",
-    siteName: "부산시 생활 정보",
+    siteName: "모아 SNS 스튜디오",
     locale: "ko_KR",
     type: "website",
   },
@@ -72,9 +72,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "부산시 생활 정보",
+              "name": "모아 SNS 스튜디오",
               "url": "https://koreainfos.com",
-              "description": "부산시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보"
+              "description": "모아 SNS 사용법과 기존 생활 정보"
             })
           }}
         />

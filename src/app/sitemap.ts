@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://koreainfos.com';
   
   const routes: MetadataRoute.Sitemap = [
+    ...['guide','reward','lotto','moa-privacy'].map(route=>({url: `${baseUrl}/${route}/`,lastModified:new Date()})),
     {
       url: `${baseUrl}`,
       lastModified: new Date(),

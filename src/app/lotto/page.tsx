@@ -1,0 +1,192 @@
+import Link from "next/link";
+import fs from "fs";
+import path from "path";
+import LottoGenerator from "@/components/LottoGenerator";
+import AdBanner from "@/components/AdBanner";
+import FortuneAnalysis from "@/components/FortuneAnalysis";
+import AiAnalysis from "@/components/AiAnalysis";
+import WeatherWidget from "@/components/WeatherWidget";
+import LuckyTips from "@/components/LuckyTips";
+import ThemeToggle from "@/components/ThemeToggle";
+
+export default function LottoHome() {
+  const dataPath = path.join(process.cwd(), 'public', 'data', 'local-info.json');
+  let localInfo: any[] = [];
+  if (fs.existsSync(dataPath)) {
+    try {
+      localInfo = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    } catch(e) {}
+  }
+
+  // 최신 데이터 필터링
+  const eventInfo = localInfo.filter(item => item.category === "행사").slice(-2).reverse();
+  const serviceInfo = localInfo.filter(item => item.category === "혜택" || item.category === "지원금").slice(-2).reverse();
+
+  return (
+    <div className="min-h-screen transition-colors duration-500 pb-20">
+      <div className="relative z-[60] bg-white text-center text-sm p-3 text-slate-800"><Link href="/">모아 SNS 소개·사용법으로 돌아가기</Link></div>
+      <nav className="fixed top-0 w-full z-50 glass-card px-6 py-4 flex justify-between items-center border-b border-white/10">
+        <div className="flex items-center gap-6">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-tr from-primary to-accent rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg rotate-3">7</div>
+            <span className="text-xl font-black tracking-tighter">PREMIUM LOTTO</span>
+          </Link>
+          <div className="hidden md:flex items-center gap-6 border-l border-white/10 pl-6 h-6">
+            <Link href="/about" className="text-sm font-bold text-secondary hover:text-primary transition-colors">소개</Link>
+            <Link href="/stores" className="text-sm font-bold text-secondary hover:text-primary transition-colors">명당 리스트</Link>
+            <Link href="/blog" className="text-sm font-bold text-secondary hover:text-primary transition-colors">블로그</Link>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <WeatherWidget />
+          <ThemeToggle />
+        </div>
+      </nav>
+
+      <main className="pt-28 px-4 max-w-4xl mx-auto space-y-12">
+        
+        {/* 히어로 섹션 */}
+        <section className="text-center space-y-4">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-none mb-4">
+            오늘 당신의 <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">행운은 몇 번?</span>
+          </h1>
+          <p className="text-secondary font-medium text-lg">
+            최신 알고리즘으로 추출하는 6+1 행운의 번호
+          </p>
+        </section>
+
+        {/* 로또 생성기 (클라이언트 컴포넌트) */}
+        <LottoGenerator />
+
+        {/* 신규 기능: 오늘의 운세 및 행운의 숫자 */}
+        <FortuneAnalysis />
+
+        {/* 신규 기능: AI 번호 분석 및 추천 */}
+        <AiAnalysis />
+
+        {/* 신규 섹션: 전국 로또 명당 바로가기 */}
+        <section className="animate-fade-in group">
+          <Link href="/stores">
+            <div className="glass-card rounded-[2.5rem] p-8 md:p-12 border border-white/10 shadow-xl bg-gradient-to-br from-primary/5 to-accent/5 hover:from-primary/10 hover:to-accent/10 transition-all text-center space-y-6 relative overflow-hidden active:scale-[0.99]">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[60px] rounded-full -mr-16 -mt-16"></div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white/5 group-hover:rotate-12 transition-transform">
+                  📍
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black">전국 <span className="text-primary">로또 명당</span> TOP 5</h2>
+                <p className="text-secondary font-medium max-w-md mx-auto">
+                  1등 당첨자가 수십 번 배출된 검증된 명당! <br className="hidden md:block"/>
+                  지도로 위치를 확인하고 당신의 행운을 찾아 떠나보세요.
+                </p>
+                <div className="inline-flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-2xl font-black transition-all group-hover:px-12 group-hover:bg-primary group-hover:text-white">
+                  명당 리스트 확인하기
+                  <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </section>
+
+        {/* 3. 최신 지역 행사 섹션 */}
+        <section id="events" className="space-y-6 animate-fade-in">
+          <div className="flex items-center justify-between px-4">
+            <h2 className="text-2xl font-black tracking-tight">최신 지역 <span className="text-accent">행사/축제</span></h2>
+            <Link href="/blog" className="text-xs font-bold text-secondary hover:text-primary transition-colors">더보기</Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            {eventInfo.length > 0 ? eventInfo.map((info, idx) => (
+              <Link href="/blog" key={idx} className="block group">
+                <div className="glass-card rounded-[2rem] p-6 border border-white/10 shadow-lg group-hover:border-accent/30 transition-all active:scale-[0.99]">
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "Event",
+                      "name": info.name,
+                      "startDate": info.startDate,
+                      "endDate": info.endDate,
+                      "location": { "@type": "Place", "name": info.location, "address": info.location },
+                      "description": info.summary
+                    }) }}
+                  />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-accent/10 text-accent px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">EVENT</span>
+                      <span className="text-[10px] text-secondary font-bold">{info.startDate} ~ {info.endDate}</span>
+                    </div>
+                    <h3 className="text-xl font-black group-hover:text-accent transition-colors">{info.name}</h3>
+                    <p className="text-sm text-secondary leading-relaxed line-clamp-2">{info.summary}</p>
+                  </div>
+                </div>
+              </Link>
+            )) : (
+              <div className="text-center py-10 opacity-30 text-xs font-bold">새로운 행사가 곧 업데이트됩니다.</div>
+            )}
+          </div>
+        </section>
+
+        {/* 광고 배치 */}
+        <AdBanner />
+
+        {/* 4. 최신 행정 혜택 섹션 */}
+        <section id="benefits" className="space-y-6 animate-fade-in">
+          <div className="flex items-center justify-between px-4">
+            <h2 className="text-2xl font-black tracking-tight">최신 행정 <span className="text-primary">혜택/지원금</span></h2>
+            <Link href="/blog" className="text-xs font-bold text-secondary hover:text-primary transition-colors">더보기</Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            {serviceInfo.length > 0 ? serviceInfo.map((info, idx) => (
+              <Link href="/blog" key={idx} className="block group">
+                <div className="glass-card rounded-[2rem] p-6 border border-white/10 shadow-lg group-hover:border-primary/30 transition-all active:scale-[0.99]">
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "GovernmentService",
+                      "name": info.name,
+                      "description": info.summary,
+                      "provider": { "@type": "GovernmentOrganization", "name": "부산광역시" }
+                    }) }}
+                  />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">BENEFIT</span>
+                      <span className="text-[10px] text-secondary font-bold">상시 접수</span>
+                    </div>
+                    <h3 className="text-xl font-black group-hover:text-primary transition-colors">{info.name}</h3>
+                    <p className="text-sm text-secondary leading-relaxed line-clamp-2">{info.summary}</p>
+                  </div>
+                </div>
+              </Link>
+            )) : (
+              <div className="text-center py-10 opacity-30 text-xs font-bold">새로운 혜택이 곧 업데이트됩니다.</div>
+            )}
+          </div>
+        </section>
+
+        {/* 4. 명언/당첨 정보 */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12 text-sm">
+          <LuckyTips />
+          
+          <Link href="/privacy" className="block group">
+            <div className="glass-card p-8 rounded-[2.5rem] space-y-4 border-l-4 border-accent hover:border-l-8 transition-all h-full shadow-lg group-hover:shadow-2xl">
+              <div className="flex justify-between items-center">
+                <h3 className="font-black text-xl">🛡️ 정보 보호</h3>
+                <span className="text-[10px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">View Policy</span>
+              </div>
+              <p className="text-secondary leading-relaxed">
+                이 사이트는 생성된 번호를 사용자님의 브라우저에만 임시로 저장하며, 외부 서버로 전송하거나 누구와도 공유하지 않습니다.
+              </p>
+            </div>
+          </Link>
+        </section>
+
+      </main>
+
+      <footer className="py-12 text-center space-y-4 opacity-50 text-xs font-medium">
+        <p>© 2026 PREMIUM LOTTO MACHINE. ALL RIGHTS RESERVED.</p>
+        <Link href="/privacy" className="hover:text-primary transition-colors cursor-pointer underline">개인정보처리방침</Link>
+      </footer>
+    </div>
+  );
+}
